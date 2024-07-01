@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -62,7 +63,7 @@ public class Order {
     private Voucher voucherId;
 
     @Column(name = "payment_amount")
-    private float payment;
+    private BigDecimal payment;
 
     @Column(name = "payment_status")
     private boolean paymentStatus;

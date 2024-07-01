@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order savedOrder = orderRepository.save(order);
-        float total = 0.0f;
+        BigDecimal total = BigDecimal.valueOf(0);
 
         List<OrderDetailDTO> orderDetails = createOrderRequestDTO.getOrderDetails();
         for (OrderDetailDTO detailDTO : orderDetails) {
@@ -77,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
             orderDetail.setPrice(productRepository.findProductByProductId(detailDTO.getProductId()).getPrice());
             orderDetailRepository.save(orderDetail);
 
-            total += detailDTO.getQuantity() * productRepository.findProductByProductId(detailDTO.getProductId()).getPrice();
+            total = total.add(productRepository.findProductByProductId(detailDTO.getProductId()).getPrice().multiply(BigDecimal.valueOf(detailDTO.getQuantity())));
 
             List<Inventory> inventoryList = inventoryRepository.findByProductIdAndAvailable(product, true);
             int totalQuantity = detailDTO.getQuantity();
@@ -96,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
 
         if(savedOrder.getVoucherId() != null){
             voucher = voucherRepository.findByVoucherId(savedOrder.getVoucherId().getVoucherId());
-            savedOrder.setPayment(total * (1 - voucher.getDiscount()));
+            savedOrder.setPayment(total.multiply(BigDecimal.valueOf(1 - voucher.getDiscount())));
         }
         else savedOrder.setPayment(total);
         orderRepository.save(savedOrder);
@@ -175,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
             }
             if(order.getCid() != null){
                 User user = order.getCid();
-                userRepository.updatePointByUserId(user.getPoint() + Math.round(order.getPayment()/10000), user.getUserId());
+                userRepository.updatePointByUserId(user.getPoint() + (int)Math.round((order.getPayment().divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP)).doubleValue()), user.getUserId());
             }
         }
         else order.setStatus(updateOrderStatusDTO.getStatus());

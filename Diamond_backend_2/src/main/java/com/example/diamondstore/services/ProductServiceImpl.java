@@ -10,6 +10,7 @@ import com.example.diamondstore.services.interfaces.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +51,8 @@ public class ProductServiceImpl implements ProductService {
                 .description(productDTO.getDescription())
                 .mountId(diamondMountRepository.findDiamondMountByMountId(productDTO.getMountId()))
                 .laborFee(productDTO.getLaborFee())
-                .componentsPrice(0)
-                .price(0)
+                .componentsPrice(BigDecimal.valueOf(0))
+                .price(BigDecimal.valueOf(0))
                 .status(productDTO.getStatus())
                 .build());
         return saveProduct;
@@ -81,8 +82,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public float calculateComponentsPrice(int productId) {
-        float componentsPrice = 0.0f;
+    public BigDecimal calculateComponentsPrice(int productId) {
+        BigDecimal componentsPrice = BigDecimal.valueOf(0);
 
         // Get all ProductDiamond relations for the given productId
         List<ProductDiamond> productDiamonds = productDiamondRepository.
@@ -92,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
         for (ProductDiamond pd : productDiamonds) {
             Diamond diamond = diamondRepository.findById(pd.getDiamondId().getDiamondId()).orElse(null);
             if (diamond != null) {
-                componentsPrice += diamond.getBasePrice() * pd.getQuantity();
+                componentsPrice = componentsPrice.add(diamond.getBasePrice().multiply(BigDecimal.valueOf(pd.getQuantity())));
             }
         }
 
@@ -102,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
             DiamondMount mount = diamondMountRepository.findById(
                     product.getMountId().getMountId()).orElse(null);
             if (mount != null) {
-                componentsPrice += mount.getBasePrice();
+                componentsPrice = componentsPrice.add(mount.getBasePrice());
             }
         }
 

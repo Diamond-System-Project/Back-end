@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 @Builder
@@ -35,7 +36,7 @@ public class OrderDetail {
     private Integer quantity;
 
     @Column(name = "price")
-    private float price;
+    private BigDecimal price;
 
     @JsonIgnore
     @OneToMany(mappedBy = "orderDetailId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

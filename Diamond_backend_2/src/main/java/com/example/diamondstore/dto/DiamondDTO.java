@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -16,5 +18,5 @@ public class DiamondDTO {
     private String clarity;
     private String cut;
     private String shape;
-    private float basePrice;
+    private BigDecimal basePrice;
 }

@@ -3,7 +3,6 @@ package com.example.diamondstore.vnpay;
 import com.example.diamondstore.core.response.ResponseObject;
 import com.example.diamondstore.entities.Order;
 import com.example.diamondstore.repositories.OrderRepository;
-import com.example.diamondstore.services.interfaces.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +24,34 @@ public class PaymentController {
 
     @GetMapping("/vn-pay")
     public ResponseObject<PaymentDTO.VNPayResponse> pay(HttpServletRequest request) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVnPayPayment(request));
+        try {
+            return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVnPayPayment(request));
+        } catch (Exception e) {
+            return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage(), null);
+        }
     }
+
     @GetMapping("/vn-pay-callback")
     public ResponseObject<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {
-        String status = request.getParameter("vnp_ResponseCode");
-        int orderId = Integer.parseInt(request.getParameter("vnp_OrderInfo"));
-        if (status.equals("00")) {
-            Order order = orderRepository.findByOrderId(orderId);
-            order.setPayment_date(Date.from(Instant.now()));
-            order.setPaymentStatus(true);
-            orderRepository.save(order);
-            return new ResponseObject<>(HttpStatus.OK, "Success", new PaymentDTO.VNPayResponse("00", "Success", "DCM KHO VAI LOL"));
-        } else {
-            return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Failed", null);
+        try {
+            String status = request.getParameter("vnp_ResponseCode");
+            int orderId = Integer.parseInt(request.getParameter("vnp_OrderInfo"));
+            if (status.equals("00")) {
+                Order order = orderRepository.findByOrderId(orderId);
+                if (order == null) {
+                    return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Order not found", null);
+                }
+                order.setPayment_date(Date.from(Instant.now()));
+                order.setPaymentStatus(true);
+                orderRepository.save(order);
+                return new ResponseObject<>(HttpStatus.OK, "Success", new PaymentDTO.VNPayResponse("00", "Success", "Payment successful"));
+            } else {
+                return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Payment failed with response code: " + status, null);
+            }
+        } catch (NumberFormatException e) {
+            return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Invalid order ID", null);
+        } catch (Exception e) {
+            return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage(), null);
         }
     }
 }

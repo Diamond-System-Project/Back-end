@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 @Builder
@@ -43,7 +44,7 @@ public class Diamond {
     private String shape;
 
     @Column(name = "base_price")
-    private float basePrice;
+    private BigDecimal basePrice;
 
     @JsonIgnore
     @OneToMany(mappedBy = "diamondId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

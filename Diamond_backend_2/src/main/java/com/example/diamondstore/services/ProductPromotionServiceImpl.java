@@ -13,6 +13,7 @@ import com.example.diamondstore.services.interfaces.ProductPromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -119,7 +120,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
                     productRepository.findProductByProductId(pId));
             Product product = productRepository.findProductByProductId(pId);
             if(productPrice != null && productPromotion.isActive()){
-                product.setPrice(productPrice.getSellingPrice() * (1 - productPromotion.getDiscount()));
+                product.setPrice(productPrice.getSellingPrice().multiply(BigDecimal.valueOf(1 - productPromotion.getDiscount())));
                 productRepository.save(product);
             }
             else {

@@ -7,6 +7,7 @@ import com.example.diamondstore.services.interfaces.DiamondMountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -25,7 +26,7 @@ public class DiamondMountServiceImpl implements DiamondMountService {
     }
 
     @Override
-    public DiamondMount createDiamondMount(String mountName, float size, String type, String material, float basePrice) {
+    public DiamondMount createDiamondMount(String mountName, float size, String type, String material, BigDecimal basePrice) {
         DiamondMount saveMount = diamondMountRepository.save(DiamondMount.builder()
                         .mountName(mountName)
                         .size(size)

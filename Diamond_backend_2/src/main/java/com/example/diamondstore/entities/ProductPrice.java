@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Builder
@@ -25,13 +26,13 @@ public class ProductPrice {
     private Product productId;
 
     @Column(name = "cost_price")
-    private float costPrice;
+    private BigDecimal costPrice;
 
     @Column(name = "markup_rate")
     private float markupRate;
 
     @Column(name = "selling_price")
-    private float sellingPrice;
+    private BigDecimal sellingPrice;
 
     @Column(name = "update_date")
     private Date updateDate;

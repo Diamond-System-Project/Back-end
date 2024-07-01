@@ -9,6 +9,8 @@ import com.example.diamondstore.services.interfaces.ProductPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -42,8 +44,8 @@ public class ProductPriceServiceImpl implements ProductPriceService {
         ProductPrice saveProductPrice = productPriceRepository.save(ProductPrice.builder()
                 .productId(product)
                 .markupRate(productPriceDTO.getMarkupRate())
-                .costPrice(product.getComponentsPrice() + product.getLaborFee())
-                .sellingPrice((product.getComponentsPrice() + product.getLaborFee()) * productPriceDTO.getMarkupRate())
+                .costPrice(product.getComponentsPrice().add(product.getLaborFee()))
+                .sellingPrice((product.getComponentsPrice().add(product.getLaborFee())).multiply(BigDecimal.valueOf(productPriceDTO.getMarkupRate())))
                 .updateDate(Date.from(Instant.now()))
                 .build());
 
@@ -60,16 +62,16 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 
         if(productPrice == null) return;
 
-        if(productPrice.getCostPrice() != (product.getComponentsPrice() + product.getLaborFee())){
+        if(productPrice.getCostPrice() != (product.getComponentsPrice().add(product.getLaborFee()))){
             ProductPrice saveProductPrice = productPriceRepository.save(ProductPrice.builder()
                     .productId(product)
                     .markupRate(productPrice.getMarkupRate())
-                    .costPrice(product.getComponentsPrice() + product.getLaborFee())
-                    .sellingPrice((product.getComponentsPrice() + product.getLaborFee()) * productPrice.getMarkupRate())
+                    .costPrice(product.getComponentsPrice().add(product.getLaborFee()))
+                    .sellingPrice((product.getComponentsPrice().add(product.getLaborFee())).multiply(BigDecimal.valueOf(productPrice.getMarkupRate())))
                     .updateDate(Date.from(Instant.now()))
                     .build());
 
-            product.setPrice(saveProductPrice.getSellingPrice());
+            product.setPrice(saveProductPrice.getSellingPrice().setScale(2, RoundingMode.HALF_UP));
             productRepository.save(product);
         }
     }

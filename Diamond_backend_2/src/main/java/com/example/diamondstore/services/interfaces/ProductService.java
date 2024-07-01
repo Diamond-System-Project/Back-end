@@ -4,6 +4,7 @@ import com.example.diamondstore.dto.ProductDTO;
 import com.example.diamondstore.entities.Product;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -13,6 +14,6 @@ public interface ProductService {
     Product createProduct(ProductDTO productDTO);
     Product updateProduct(ProductDTO productDTO, int id);
     List<Product> findProductByProductName(String name);
-    float calculateComponentsPrice(int productId);
+    BigDecimal calculateComponentsPrice(int productId);
     List<Product> getProductsByMountType(String type);
 }

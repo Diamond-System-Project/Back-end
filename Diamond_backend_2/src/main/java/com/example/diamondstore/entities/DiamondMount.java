@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -35,7 +36,7 @@ public class DiamondMount {
     private String material;
 
     @Column(name = "base_price")
-    private float basePrice;
+    private BigDecimal basePrice;
 
     @JsonIgnore
     @OneToMany(mappedBy = "mountId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

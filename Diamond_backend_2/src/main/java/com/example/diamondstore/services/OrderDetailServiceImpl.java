@@ -13,6 +13,7 @@ import com.example.diamondstore.services.interfaces.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -36,7 +37,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                         .productId(product)
                         .orderId(orderRepository.findByOrderId(orderDetailDTO.getOrderId()))
                         .quantity(orderDetailDTO.getQuantity())
-                        .price(orderDetailDTO.getQuantity() * product.getPrice())
+                        .price(product.getPrice().multiply(BigDecimal.valueOf(orderDetailDTO.getQuantity())))
                 .build());
 
         return saveOrderDetail;
@@ -49,7 +50,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
         Product product = productRepository.findProductByProductId(existingOrderDetail.getProductId().getProductId());
         existingOrderDetail.setQuantity(updateOrderDetailDTO.getQuantity());
-        existingOrderDetail.setPrice(updateOrderDetailDTO.getQuantity() * product.getPrice());
+        existingOrderDetail.setPrice(product.getPrice().multiply(BigDecimal.valueOf(updateOrderDetailDTO.getQuantity())));
 
         return orderDetailRepository.save(existingOrderDetail);
     }

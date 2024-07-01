@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Builder
@@ -32,13 +33,13 @@ public class Product {
     private DiamondMount mountId;
 
     @Column(name = "components_price")
-    private float componentsPrice;
+    private BigDecimal componentsPrice;
 
     @Column(name = "labor_fee")
-    private float laborFee;
+    private BigDecimal laborFee;
 
     @Column(name = "price")
-    private float price;
+    private BigDecimal price;
 
     @Column(name = "status")
     private String status;
