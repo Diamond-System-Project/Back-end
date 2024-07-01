@@ -186,7 +186,7 @@ public class UserController {
 
     @PutMapping("/change-password/{id}")
     @PreAuthorize("hasRole('ROLE_Member')")
-    public ResponseEntity<ApiResponse> changePass(@PathVariable int id, @RequestBody PasswordResetDTO passwordResetDTO, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> changePass(@PathVariable int id, @RequestBody PasswordChangeDTO passwordChangeDTO, HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
@@ -197,7 +197,7 @@ public class UserController {
                         .message("Does not have permission to update this user!")
                         .build());
             } else {
-                String message = userService.changePassword(id, passwordResetDTO);
+                String message = userService.changePassword(id, passwordChangeDTO);
                 boolean success = message.equals("Your password has been successfully updated.");
                 if(success)
                     tokenBlacklist.addToken(token);

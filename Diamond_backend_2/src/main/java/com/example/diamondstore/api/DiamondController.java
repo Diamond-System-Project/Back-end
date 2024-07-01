@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -97,6 +98,23 @@ public class DiamondController {
             return ResponseEntity.ok(ApiResponse.builder()
                     .success(false)
                     .message("Update diamond fail! Error: " + e.getMessage())
+                    .build());
+        }
+    }
+
+    @GetMapping("/list/prices")
+    public ResponseEntity<ApiResponse> getPricesByCaratWeight(@RequestBody float caratWeight) throws Exception {
+        List<BigDecimal> list = diamondService.getTop20PriceByCaratWeight(caratWeight);
+        if(list.isEmpty()){
+            return ResponseEntity.ok(ApiResponse.builder()
+                    .success(false)
+                    .message("List diamond prices is empty!")
+                    .build());
+        }else{
+            return ResponseEntity.ok(ApiResponse.builder()
+                    .success(true)
+                    .message("Get List Diamond Prices")
+                    .data(list)
                     .build());
         }
     }

@@ -8,6 +8,7 @@ import com.example.diamondstore.services.interfaces.DiamondService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -61,5 +62,10 @@ public class DiamondServiceImpl implements DiamondService{
         saveDiamond.setBasePrice(diamondDTO.getBasePrice());
 
         return diamondRepository.save(saveDiamond);
+    }
+
+    @Override
+    public List<BigDecimal> getTop20PriceByCaratWeight(float caratWeight) {
+        return diamondRepository.findTop20PriceByCaratWeight(caratWeight);
     }
 }

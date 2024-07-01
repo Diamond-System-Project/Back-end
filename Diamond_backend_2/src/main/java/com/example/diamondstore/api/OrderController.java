@@ -456,5 +456,32 @@ public class OrderController {
                             .build());
         }
     }
+
+    @GetMapping("/list/deliveryOrder")
+    @PreAuthorize("hasRole('ROLE_Manager')")
+    public ResponseEntity<ApiResponse> getDeliveryShippingOrderNumber() {
+        try {
+            List<DeliveryShippingOrderCountDTO> list = orderService.getDeliveryShippingOrderNumber();
+            if (list.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        ApiResponse.builder()
+                        .success(false)
+                        .message("No Delivery Staff Found!")
+                        .build());
+            } else {
+                return ResponseEntity.ok(ApiResponse.builder()
+                                .success(true)
+                                .message("List Delivery Staff and Their Orders:")
+                                .data(list)
+                                .build());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    ApiResponse.builder()
+                            .success(false)
+                            .message("Failed to get order: " + e.getMessage())
+                            .build());
+        }
+    }
 }
 

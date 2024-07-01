@@ -21,4 +21,5 @@ public interface OrderService {
     Order assignOrderToDelivery(DeliveryDTO deliveryDTO);
     Order updateOrderStatusByDelivery(UpdateOrderStatusDTO updateOrderStatusDTO);
     Order cancelOrder(int orderId, CancelOrderDTO cancelOrderDTO);
+    List<DeliveryShippingOrderCountDTO> getDeliveryShippingOrderNumber();
 }

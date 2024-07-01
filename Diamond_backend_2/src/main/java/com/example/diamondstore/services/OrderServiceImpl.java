@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,8 @@ public class OrderServiceImpl implements OrderService {
     private InventoryRepository inventoryRepository;
     @Autowired
     private VoucherRepository voucherRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository) {
@@ -199,5 +202,20 @@ public class OrderServiceImpl implements OrderService {
             voucherRepository.save(voucher);
         }
         return orderRepository.save(order);
+    }
+
+    @Override
+    public List<DeliveryShippingOrderCountDTO> getDeliveryShippingOrderNumber() {
+        List<DeliveryShippingOrderCountDTO> list = new ArrayList<>();
+        List<User> listDelivery = userRepository.findUsersByRoleid(roleRepository.findRoleByRoleid(4));
+
+        for(User d : listDelivery){
+            DeliveryShippingOrderCountDTO dto = new DeliveryShippingOrderCountDTO();
+            dto.setDeliveryId(d.getUserId());
+            dto.setDeliveryName(d.getFullName());
+            dto.setNumberOfOrders(orderRepository.countShippingOrderByDeliveryId(d));
+            list.add(dto);
+        }
+        return list;
     }
 }

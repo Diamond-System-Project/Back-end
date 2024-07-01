@@ -31,4 +31,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT SUM(o.payment) FROM Order o WHERE o.status = 'Delivered'")
     float totalRevenue(); // Dung ham Sum nhung Order co Status la Deliver
+
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.status = 'Shipping' AND o.deliveryStaff = :deliveryStaff")
+    int countShippingOrderByDeliveryId(@Param("deliveryStaff") User deliveryStaff);
 }

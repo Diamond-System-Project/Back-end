@@ -1,5 +1,6 @@
 package com.example.diamondstore.services;
 
+import com.example.diamondstore.dto.PasswordChangeDTO;
 import com.example.diamondstore.dto.PasswordResetDTO;
 import com.example.diamondstore.dto.UpdateUser;
 import com.example.diamondstore.dto.UserLoginResponse;
@@ -149,23 +150,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String changePassword(int userId, PasswordResetDTO passwordResetDTO) {
+    public String changePassword(int userId, PasswordChangeDTO passwordChangeDTO) {
         User saveUser = userRepository.findUserByUserId(userId);
 
         if (saveUser == null) {
             return "Invalid User";
         }
 
-        if (!passwordResetDTO.getPassword().equals(passwordResetDTO.getConfirm())) {
+        if (passwordChangeDTO.getPassword().isEmpty() || passwordChangeDTO.getOldPassword().isEmpty()
+                || passwordChangeDTO.getConfirm().isEmpty()){
+            return "All fields must not be null";
+        }
+
+        if (!bCryptPasswordEncoder.matches(passwordChangeDTO.getOldPassword(), saveUser.getPassword())) {
+            return "Old password does not match!";
+        }
+
+        if (!passwordChangeDTO.getPassword().equals(passwordChangeDTO.getConfirm())) {
             return "Confirm password does not match!";
         }
 
-
-        if (bCryptPasswordEncoder.matches(passwordResetDTO.getPassword(), saveUser.getPassword())) {
+        if (bCryptPasswordEncoder.matches(passwordChangeDTO.getPassword(), saveUser.getPassword())) {
             return "New password cannot be same as current password.";
         }
 
-        saveUser.setPassword(bCryptPasswordEncoder.encode(passwordResetDTO.getPassword()));
+        saveUser.setPassword(bCryptPasswordEncoder.encode(passwordChangeDTO.getPassword()));
         userRepository.save(saveUser);
         return "Your password has been successfully updated.";
     }

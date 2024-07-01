@@ -33,7 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/*/*/login", "/*/*/logout", "/*/*/register", "/*/*/payment/*",
                                 "/*/*/forgot-password", "/*/*/reset-password", "/*/product/list/*",
                                 "/*/*/createWithDetails", "/*/comment/product/*", "/api/order/*",
-                                "/*/product/all", "/*/*/showProduct/*", "/*/product/search/*").permitAll() // Permit access to /login endpoint
+                                "/*/product/all", "/*/*/showProduct/*", "/*/product/search/*",
+                                "/*/*/list/prices").permitAll() // Permit access to /login endpoint
 
                         .requestMatchers("/api/comment/add", "/api/comment/edit/*", "/api/order/createWithDetails",
                                 "/api/order_detail/create", "/api/order_detail/*", "/api/order_detail/update/*",
@@ -51,15 +52,11 @@ public class SecurityConfig {
                                 "/api/productpromotion/promotion/*", "/api/promotion/*", "/api/promotion/update/*",
                                 "/api/promotion/status/*", "/api/product/create","/api/product/update/*", "/api/user/all",
                                 "/api/user/status/*", "/api/voucher/all", "/api/vouchertype/all","/api/vouchertype/create",
-                                "/api/vouchertype/update/*", "/api/warranty/delete/*",
-                                "/api/collection/create" , "/api/collection/update/*", "/api/collection/deleteCollection/*",
-                                 "/api/collection/addCollection", "/api/collection/deleteProduct",
-                                 "/api/dashboard/countMember", "/api/dashboard/countProcessingOrder", "/api/dashboard/countCompleteOrder",
-                                 "/api/dashboard/countCancelOrder", "/api/dashboard/totalRevenue").hasRole("Manager")
-
+                                "/api/vouchertype/update/*", "/api/warranty/delete/*", "/api/collection/create" ,
+                                "/api/collection/update/*", "/api/collection/deleteCollection/*", "/api/collection/addCollection",
+                                "/api/collection/deleteProduct", "/api/order/list/deliveryOrder").hasRole("Manager")
 
                         .requestMatchers("/api/order/delivery/*", "/api/order/delivery/status" ).hasRole("Delivery Staff")
-
 
                         .requestMatchers("/api/diamond/all", "/api/mount/all", "/api/diamond/*",
                                 "/api/mount/*", "/api/order/all", "/api/order/user/*", "/api/warranty/create",
@@ -70,6 +67,10 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/comment/delete/*", "/api/order/update/*",
                                 "/api/voucher/member/*").hasAnyRole("Member", "Manager")
+
+                        .requestMatchers("/api/dashboard/countMember", "/api/dashboard/countProcessingOrder",
+                                "/api/dashboard/countCompleteOrder", "/api/dashboard/countCancelOrder",
+                                "/api/dashboard/totalRevenue").hasRole("Admin")
 
                         .anyRequest().authenticated()
                 )

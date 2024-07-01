@@ -22,7 +22,7 @@ public class DashboardController {
     private RoleRepository roleRepository;
 
     @GetMapping("/countMember")
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasRole('ROLE_Admin')")
     public ResponseEntity<ApiResponse> countMembers() {
         try {
             Role memberRole = roleRepository.findById(5)
@@ -45,7 +45,7 @@ public class DashboardController {
     }
 
     @GetMapping("/countProcessingOrder")
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasRole('ROLE_Admin')")
     public ResponseEntity<ApiResponse> countProcessingOrders() {
         try {
             int count = dashboardService.countProcessingOrder();
@@ -66,7 +66,7 @@ public class DashboardController {
     }
 
     @GetMapping("/countCompleteOrder")
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasRole('ROLE_Admin')")
     public ResponseEntity<ApiResponse> countCompleteOrders() {
         try {
             int count = dashboardService.countCompleteOrder();
@@ -87,7 +87,7 @@ public class DashboardController {
     }
 
     @GetMapping("/countCancelOrder")
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasRole('ROLE_Admin')")
     public ResponseEntity<ApiResponse> countCancelOrders() {
         try {
             int count = dashboardService.countCancelOrder();
@@ -108,7 +108,7 @@ public class DashboardController {
     }
 
     @GetMapping("/totalRevenue")
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasRole('ROLE_Admin')")
     public ResponseEntity<ApiResponse> totalRevenue() {
         try {
             float revenue = dashboardService.totalRevenue();
